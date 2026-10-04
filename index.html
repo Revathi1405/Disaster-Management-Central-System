@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RescueLink – Real-Time Disaster Response & Rescue Coordination System</title>
+  <meta name="description" content="Centralized cloud-based disaster management and emergency response coordination platform.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="./src/css/main.css">
+  <link rel="stylesheet" href="./src/css/components.css">
+  <link rel="stylesheet" href="./src/css/pages.css">
+</head>
+<body class="bg-slate">
+  <!-- Prototype Banner Disclaimer -->
+  <div class="demo-disclaimer-bar">
+    <span>⚠️ <strong>RESCUELINK DEMO SYSTEM:</strong> Simulated environment for project evaluation. Third-party integrations (GPS, SMS, Weather APIs) are mock-simulated.</span>
+    <button id="close-disclaimer" class="btn-text-sm">✕</button>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo" id="nav-brand">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="brand-title">Rescue<span class="highlight">Link</span></span>
+          <span class="brand-tagline">Disaster Coordination</span>
+        </div>
+        <div class="live-badge">
+          <span class="pulse-dot"></span> LIVE
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="main-nav" id="desktop-nav">
+        <button class="nav-link active" data-view="home">Home</button>
+        <button class="nav-link" data-view="dashboard">Dashboard</button>
+        <button class="nav-link" data-view="workflow">Workflow Simulator</button>
+        <button class="nav-link" data-view="report">Report Emergency</button>
+        <button class="nav-link" data-view="incidents">Incidents</button>
+        <button class="nav-link" data-view="rescue">Rescue Ops</button>
+        <button class="nav-link" data-view="resources">Resources</button>
+        <button class="nav-link" data-view="hospitals">Hospitals & Shelters</button>
+        <button class="nav-link" data-view="volunteers">Volunteers</button>
+        <button class="nav-link" data-view="notifications">Notifications</button>
+        <button class="nav-link" data-view="monitoring">Monitoring</button>
+        <button class="nav-link" data-view="about">About System</button>
+      </nav>
+
+      <!-- Header Action Controls -->
+      <div class="header-actions">
+        <!-- Role Switcher Dropdown -->
+        <div class="role-selector-wrapper">
+          <label for="user-role-select" class="sr-only">Active View Mode</label>
+          <select id="user-role-select" class="role-select">
+            <option value="control-room">🎮 Role: Control Room Cmdr</option>
+            <option value="citizen">👤 Role: Citizen / Victim</option>
+            <option value="rescue-team">🚒 Role: Rescue Team Leader</option>
+            <option value="hospital-admin">🏥 Role: Hospital Admin</option>
+            <option value="shelter-manager">⛺ Role: Shelter Manager</option>
+            <option value="volunteer">🤝 Role: Volunteer / NGO</option>
+            <option value="system-admin">⚡ Role: System Admin</option>
+          </select>
+        </div>
+
+        <button class="btn btn-sos btn-sm" id="header-sos-btn">
+          🚨 SOS Report
+        </button>
+
+        <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-drawer" id="mobile-drawer">
+      <div class="drawer-header">
+        <span class="drawer-title">Navigation Menu</span>
+        <button id="close-drawer-btn" class="btn-icon">✕</button>
+      </div>
+      <nav class="mobile-nav-links">
+        <button class="mobile-nav-link active" data-view="home">🏠 1. Home</button>
+        <button class="mobile-nav-link" data-view="dashboard">📊 2. Operational Dashboard</button>
+        <button class="mobile-nav-link" data-view="workflow">🔄 3. Workflow Simulator</button>
+        <button class="mobile-nav-link" data-view="report">🚨 4. Report Emergency</button>
+        <button class="mobile-nav-link" data-view="incidents">📋 5. Disaster Incidents</button>
+        <button class="mobile-nav-link" data-view="rescue">🚒 6. Rescue Operations</button>
+        <button class="mobile-nav-link" data-view="resources">📦 7. Emergency Resources</button>
+        <button class="mobile-nav-link" data-view="hospitals">🏥 8. Hospitals & Shelters</button>
+        <button class="mobile-nav-link" data-view="volunteers">🤝 9. Volunteers</button>
+        <button class="mobile-nav-link" data-view="notifications">🔔 10. Notifications</button>
+        <button class="mobile-nav-link" data-view="monitoring">🛰️ 11. Disaster Monitoring</button>
+        <button class="mobile-nav-link" data-view="about">ℹ️ 12. About System</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main View Render Target -->
+  <main id="app-content" class="app-main-content"></main>
+
+  <!-- Global Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">Rescue<span>Link</span></div>
+        <p class="footer-desc">
+          Real-Time Disaster Response & Rescue Coordination System. A centralized multi-agency cloud platform designed to streamline disaster response, resource optimization, and life-saving operations.
+        </p>
+      </div>
+      <div class="footer-links">
+        <h4>System Modules</h4>
+        <ul>
+          <li><a href="#" data-view="dashboard">Operational Dashboard</a></li>
+          <li><a href="#" data-view="workflow">Workflow Simulator</a></li>
+          <li><a href="#" data-view="incidents">Incident Management</a></li>
+          <li><a href="#" data-view="rescue">Rescue Operations</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Architecture & SRS</h4>
+        <ul>
+          <li><a href="#" data-view="about">Presentation Layer</a></li>
+          <li><a href="#" data-view="about">Business Logic Engine</a></li>
+          <li><a href="#" data-view="about">Traceability Matrix (FR1-FR18)</a></li>
+          <li><a href="#" data-view="about">External API Integrations</a></li>
+        </ul>
+      </div>
+      <div class="footer-emergency">
+        <h4>Emergency Contacts</h4>
+        <div class="hotline-badge">National Helpline: <strong>112 / 1070</strong></div>
+        <div class="hotline-badge">Disaster Control: <strong>108 / 101</strong></div>
+        <p class="demo-tag">Project Demonstration System &copy; 2026 RescueLink Team</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Reusable Modal Container -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div id="modal-container" class="modal-card"></div>
+  </div>
+
+  <!-- Reusable Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- App Entry Script -->
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
